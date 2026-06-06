@@ -1,0 +1,4 @@
+Model,MAE,RMSE,R²
+K Nearest Neighbors,1793.88,3760.95,0.9723
+Linear Regression,4528.72,6666.65,0.9129
+Ridge Regression,4528.72,6666.65,0.9129
