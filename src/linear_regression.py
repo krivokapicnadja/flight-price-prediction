@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import json
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import r2_score
@@ -48,3 +49,21 @@ plt.legend()
 plt.tight_layout()
 plt.savefig(os.path.join(FIG_DIR, "linear_regression_predicted_vs_actual.png"))
 plt.close()
+
+# --- Čuvanje metrika u zajednički JSON ---
+METRICS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "metrics"
+)
+os.makedirs(METRICS_DIR, exist_ok=True)
+METRICS_FILE = os.path.join(METRICS_DIR, "all_metrics.json")
+
+if os.path.exists(METRICS_FILE):
+    with open(METRICS_FILE, "r") as f:
+        all_metrics = json.load(f)
+else:
+    all_metrics = {}
+
+all_metrics["Linear Regression"] = {"mae": mae, "rmse": rmse, "r2": r2}
+
+with open(METRICS_FILE, "w") as f:
+    json.dump(all_metrics, f, indent=2)
