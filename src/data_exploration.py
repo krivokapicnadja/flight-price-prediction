@@ -25,7 +25,7 @@ from scipy import stats
 sns.set_theme(style="whitegrid", palette="muted", font_scale=1.05)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(BASE_DIR, "dataset", "Clean_Dataset.csv")
+DATA_PATH = os.path.join(BASE_DIR, "dataset", "raw", "Clean_Dataset.csv")
 FIG_DIR = os.path.join(BASE_DIR, "results", "figures")
 os.makedirs(FIG_DIR, exist_ok=True)
 
@@ -173,7 +173,7 @@ for i, col in enumerate(num_cols):
     sns.histplot(
         df[col], kde=True, bins=40, color=sns.color_palette(PALETTE)[i], ax=axes[i]
     )
-    axes[i].set_title(f"Histogram: {col}", fontweight="bold")
+    axes
 
 
 print(f"\n→ Grafik:  {save_fig('04_numerical_analysis.png')}")
