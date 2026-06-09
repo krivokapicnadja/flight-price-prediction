@@ -26,7 +26,7 @@ from preprocess import y_train_lin as y_train
 #     knr.fit(X_train, y_train)
 #     y_pred = knr.predict(X_val)
 
-#     # koristim rmse za optimizaciju alfa parametra
+#     # koristim rmse za optimizaciju suseda parametra
 #     greska[sused] = root_mean_squared_error(y_val, y_pred)
 
 # # Ispis 10 najlošijih suseda (najveća greška)
