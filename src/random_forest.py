@@ -41,6 +41,7 @@ najbolji_estimator = min(greska, key=greska.get)
 print(greska[najbolji_estimator], najbolji_estimator)
 
 # 2783.787646741996 150 --> RMSE sa najboljim brojem estimatora 150
+# znam da nije usao u underfitting jer mu je najbolje rmse sa hiperparametrom koji nije poslednja vrednost iteracije
 randtree = RandomForestRegressor(
     n_estimators=najbolji_estimator, min_samples_leaf=2, min_samples_split=20
 )
