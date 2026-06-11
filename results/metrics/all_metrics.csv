@@ -1,6 +1,7 @@
 Model,MAE,RMSE,R²
 Random Forest,1216.59,2687.35,0.9858
+Gradient Boosting,1451.42,2744.36,0.9852
 Decision Tree,1176.38,2870.28,0.9839
 K Nearest Neighbors,1793.88,3760.95,0.9723
-Linear Regression,4528.72,6666.65,0.9129
 Ridge Regression,4528.72,6666.65,0.9129
+Linear Regression,4528.72,6666.65,0.9129
