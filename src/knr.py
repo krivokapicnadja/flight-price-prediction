@@ -15,29 +15,29 @@ from preprocess import y_test_lin as y_test
 from preprocess import y_val_lin as y_val
 from preprocess import y_train_lin as y_train
 
-# # niz brojeva od 1 do 20 - trazimo najbolje K
-# neighbours = np.array(range(1, 20))
+# niz brojeva od 1 do 20 - trazimo najbolje K
+neighbours = np.array(range(1, 20))
 
-# greska = {}
+greska = {}
 
 
-# for sused in neighbours:
-#     knr = KNeighborsRegressor(n_neighbors=sused)
-#     knr.fit(X_train, y_train)
-#     y_pred = knr.predict(X_val)
+for sused in neighbours:
+    knr = KNeighborsRegressor(n_neighbors=sused)
+    knr.fit(X_train, y_train)
+    y_pred = knr.predict(X_val)
 
-#     # koristim rmse za optimizaciju sused parametra
-#     greska[sused] = root_mean_squared_error(y_val, y_pred)
+    # koristim rmse za optimizaciju sused parametra
+    greska[sused] = root_mean_squared_error(y_val, y_pred)
 
-# # Ispis 10 najlošijih suseda (najveća greška)
-# najlosiji_sused = sorted(greska.items(), key=lambda x: x[1], reverse=True)[:10]
-# print("\n10 najlosijih suseda (najveca RMSE greska):")
-# for sused, rmse_val in najlosiji_sused:
-#     print(f"  sused = {sused:.6f}  =>  RMSE = {rmse_val:.4f}")
+# Ispis 10 najlošijih suseda (najveća greška)
+najlosiji_sused = sorted(greska.items(), key=lambda x: x[1], reverse=True)[:10]
+print("\n10 najlosijih suseda (najveca RMSE greska):")
+for sused, rmse_val in najlosiji_sused:
+    print(f"  sused = {sused:.6f}  =>  RMSE = {rmse_val:.4f}")
 
-# # Najbolji broj suseda
-# najbolji_susedi = min(greska, key=greska.get)
-# print(greska[najbolji_susedi], najbolji_susedi)
+# Najbolji broj suseda
+najbolji_susedi = min(greska, key=greska.get)
+print(greska[najbolji_susedi], najbolji_susedi)
 
 # kroz gornju for petlju je dobijeno da je najmanja rmse za K=4 - ne pokrece se uvek zbog duzine pokretanja
 knr = KNeighborsRegressor(n_neighbors=4)
