@@ -39,18 +39,18 @@ X_train_full = np.vstack(
 )  # rez = n_train+n_val, n_features; vstack radi nad 2D nizovima
 y_train_full = np.concatenate([y_train, y_val])  # n_train+n_val
 # jer grid search u sebi ima implementiranu validaiciju - prosirujem scope podataka
-# dtree = DecisionTreeRegressor()
+dtree = DecisionTreeRegressor()
 
-# grid_search = GridSearchCV(  # difoltno radi 5 cross fold validaciju
-#     dtree,
-#     params,
-#     scoring="neg_root_mean_squared_error",  # zato sto scikit learn radi po principu sto veci broj, to bolji
-#     verbose=1,  # ispis progressa
-# )
-# grid_search.fit(X_train_full, y_train_full)
+grid_search = GridSearchCV(  # difoltno radi 5 cross fold validaciju
+    dtree,
+    params,
+    scoring="neg_root_mean_squared_error",  # zato sto scikit learn radi po principu sto veci broj, to bolji
+    verbose=1,  # ispis progressa
+)
+grid_search.fit(X_train_full, y_train_full)
 
-# print("Najbolji parametri:", grid_search.best_params_)
-# print("Najbolji RMSE:", -grid_search.best_score_)
+print("Najbolji parametri:", grid_search.best_params_)
+print("Najbolji RMSE:", -grid_search.best_score_)
 
 # grid searchom je dobijeno sledece:
 # Najbolji parametri: {'max_depth': None, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split':20}
