@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import joblib
 import matplotlib.pyplot as plt
 import os
 import json
@@ -107,3 +108,10 @@ all_metrics["Decision Tree"] = {"mae": mae, "rmse": rmse, "r2": r2}
 
 with open(METRICS_FILE, "w") as f:
     json.dump(all_metrics, f, indent=2)
+
+# --- Čuvanje modela ---
+MODELS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models"
+)
+os.makedirs(MODELS_DIR, exist_ok=True)
+joblib.dump(dtree, os.path.join(MODELS_DIR, "decision_tree.joblib"))

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import joblib
 import matplotlib.pyplot as plt
 import os
 import json
@@ -43,7 +44,9 @@ print(greska[najbolji_estimator], najbolji_estimator)
 # 2783.787646741996 150 --> RMSE sa najboljim brojem estimatora 150
 # znam da nije usao u underfitting jer mu je najbolje rmse sa hiperparametrom koji nije poslednja vrednost iteracije
 randtree = RandomForestRegressor(
-    n_estimators=najbolji_estimator, min_samples_leaf=2, min_samples_split=20
+    n_estimators=150,  # najbolji_estimator
+    min_samples_leaf=2,
+    min_samples_split=20,
 )
 randtree.fit(X_train, y_train)
 y_pred = randtree.predict(X_test)
@@ -96,3 +99,10 @@ all_metrics["Random Forest"] = {"mae": mae, "rmse": rmse, "r2": r2}
 
 with open(METRICS_FILE, "w") as f:
     json.dump(all_metrics, f, indent=2)
+
+# --- Čuvanje modela ---
+MODELS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models"
+)
+os.makedirs(MODELS_DIR, exist_ok=True)
+joblib.dump(randtree, os.path.join(MODELS_DIR, "random_forest.joblib"))

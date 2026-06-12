@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import joblib
 import matplotlib.pyplot as plt
 import os
 import json
@@ -74,7 +75,7 @@ from preprocess import y_train_f as y_train
 # )
 # print("-" * 55 + "\n")
 
-# --- Finalni model na testu (odkomentariši kad si zadovoljna hiperparametrima) ---
+# --- Finalni model na testu
 gradboost = GradientBoostingRegressor(
     n_estimators=700,  # best_params[1]
     learning_rate=0.5,
@@ -135,3 +136,10 @@ all_metrics["Gradient Boosting"] = {"mae": mae, "rmse": rmse, "r2": r2}
 
 with open(METRICS_FILE, "w") as f:
     json.dump(all_metrics, f, indent=2)
+
+# --- Čuvanje modela ---
+MODELS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models"
+)
+os.makedirs(MODELS_DIR, exist_ok=True)
+joblib.dump(gradboost, os.path.join(MODELS_DIR, "gradboost.joblib"))
