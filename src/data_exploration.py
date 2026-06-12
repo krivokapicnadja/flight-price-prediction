@@ -20,13 +20,13 @@ from scipy import stats
 
 
 # ==========================================================================
-# 0. PODEŠAVANJA
+#  PODEŠAVANJA
 # ==========================================================================
 sns.set_theme(style="whitegrid", palette="muted", font_scale=1.05)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_DIR, "dataset", "raw", "Clean_Dataset.csv")
-FIG_DIR = os.path.join(BASE_DIR, "results", "figures")
+FIG_DIR = os.path.join(BASE_DIR, "results", "exploration")
 os.makedirs(FIG_DIR, exist_ok=True)
 
 PALETTE = "Set2"
@@ -42,10 +42,10 @@ def save_fig(name: str, dpi: int = 200) -> str:
 
 
 # ==========================================================================
-# 1. UČITAVANJE PODATAKA
+#  UČITAVANJE PODATAKA
 # ==========================================================================
 print("=" * 72)
-print("  1.  UČITAVANJE PODATAKA")
+print(" UČITAVANJE PODATAKA")
 print("=" * 72)
 
 df = pd.read_csv(DATA_PATH)
@@ -63,10 +63,10 @@ print(f"Duplikati:      {df.duplicated().sum()} reda")
 
 
 # ==========================================================================
-# 2. OSNOVNE INFORMACIJE O KOLONAMA
+# 0. OSNOVNE INFORMACIJE O KOLONAMA
 # ==========================================================================
 print("\n" + "=" * 72)
-print("  2.  OSNOVNE INFORMACIJE")
+print(" OSNOVNE INFORMACIJE")
 print("=" * 72)
 
 print("\n--- dtypes i broj ne-NaN vrednosti ---")
@@ -92,10 +92,10 @@ for col in df.columns:
 
 
 # ==========================================================================
-# 3. DISTRIBUCIJA CILJNE PROMENLJIVE — PRICE
+# 1. DISTRIBUCIJA CILJNE PROMENLJIVE — PRICE
 # ==========================================================================
 print("\n" + "=" * 72)
-print("  3.  CILJNA PROMENLJIVA — PRICE")
+print("  1. CILJNA PROMENLJIVA — PRICE")
 print("=" * 72)
 
 p = df["price"]
@@ -117,10 +117,10 @@ plt.title("Histogram cene", fontweight="bold")
 print(f"\n→ Grafik:  {save_fig('01_price_distribution.png')}")
 
 # ==========================================================================
-# 4. KATEGORIJSKE VARIJABLE
+# 2. KATEGORIJSKE VARIJABLE
 # ==========================================================================
 print("\n" + "=" * 72)
-print("  4.  KATEGORIJSKE VARIJABLE")
+print("  2.  KATEGORIJSKE VARIJABLE")
 print("=" * 72)
 
 cat_cols = [
@@ -149,10 +149,29 @@ axes[-1].set_visible(False)
 print(f"\n→ Grafik:  {save_fig('02_categorical_distributions.png')}")
 
 # ==========================================================================
-# 6. NUMERIČKE VARIJABLE
+# 3. KATEGORIJSKE VARIJABLE vs CENA (boxplot)
 # ==========================================================================
 print("\n" + "=" * 72)
-print("  6.  NUMERIČKE VARIJABLE")
+print("  3.  KATEGORIJSKE VARIJABLE vs CENA")
+print("=" * 72)
+
+fig, axes = plt.subplots(4, 2, figsize=(16, 22))
+axes = axes.flatten()
+
+for i, col in enumerate(cat_cols):
+    sns.boxplot(data=df, x=col, y="price", palette=PALETTE, ax=axes[i])
+    axes[i].set_title(f"Cena po: {col}", fontweight="bold")
+    axes[i].tick_params(axis="x", rotation=30)
+
+axes[-1].set_visible(False)
+
+print(f"\n→ Grafik:  {save_fig('03_categorical_vs_price.png')}")
+
+# ==========================================================================
+# 4. NUMERIČKE VARIJABLE
+# ==========================================================================
+print("\n" + "=" * 72)
+print("  4.  NUMERIČKE VARIJABLE")
 print("=" * 72)
 
 num_cols = ["duration", "days_left"]
@@ -178,29 +197,67 @@ for i, col in enumerate(num_cols):
 
 print(f"\n→ Grafik:  {save_fig('04_numerical_analysis.png')}")
 
-
 # ==========================================================================
-# 8. KORELACIONA MATRICA - +1 potpuna korelacija, vr se krecu u istom smeru
-# -1, krecu se u suprotnim smerovima, 0 - nema linearne korelacije medju podacima
+# 5. NUMERIČKE VARIJABLE vs CENA
 # ==========================================================================
 print("\n" + "=" * 72)
-print("  8.  KORELACIONA MATRICA")
+print("  5.  NUMERIČKE VARIJABLE vs CENA")
 print("=" * 72)
 
-# Numeričke kolone + price
-corr_cols = ["duration", "days_left", "price"]
-corr_matrix = df[corr_cols].corr()
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-plt.figure(figsize=(6, 5))
+for i, col in enumerate(num_cols):
+    sns.scatterplot(data=df, x=col, y="price", alpha=0.4, ax=axes[i])
+    sns.regplot(
+        data=df,
+        x=col,
+        y="price",
+        scatter=False,
+        color="red",
+        line_kws={"linewidth": 2},
+        ax=axes[i],
+    )
+    axes[i].set_title(f"Cena vs {col}", fontweight="bold")
+
+    corr_val = df[col].corr(df["price"])
+    axes[i].text(
+        0.95,
+        0.95,
+        f"r = {corr_val:.3f}",  # koef korelacije
+        transform=axes[i].transAxes,
+        ha="right",
+        va="top",
+        fontsize=12,
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
+    )
+
+print(f"\n→ Grafik:  {save_fig('05_numerical_vs_price.png')}")
+
+# ==========================================================================
+# 6. KORELACIONA MATRICA (svi atributi)
+# ==========================================================================
+print("\n" + "=" * 72)
+print("  6.  KORELACIONA MATRICA (svi atributi)")
+print("=" * 72)
+
+# Enkodiranje kategoričkih kolona da bi mogle u korelacionu matricu
+df_encoded = df.copy()
+for col in df_encoded.columns:
+    if df_encoded[col].dtype == "object":
+        df_encoded[col] = pd.factorize(df_encoded[col])[0]
+
+corr_matrix = df_encoded.corr()
+
+plt.figure(figsize=(14, 11))
 sns.heatmap(
     corr_matrix,
     annot=True,
     cmap="coolwarm",
-    fmt=".4f",
+    fmt=".3f",
     vmin=-1,
     vmax=1,
     square=True,
     linewidths=1,
 )
-plt.title("Korelaciona matrica (numeričke varijable)", fontweight="bold")
+plt.title("Korelaciona matrica (svi atributi)", fontweight="bold")
 print(f"\n→ Grafik:  {save_fig('06_correlation_heatmap.png')}")
